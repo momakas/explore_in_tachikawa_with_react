@@ -1,5 +1,18 @@
 # explore_in_tachikawa_with_react
 
+## 起動方法
+- Dockerインストール
+こちらを見てインストールしてください。
+https://qiita.com/R_R/items/a09fab09ce9fa9e905c5
+
+- コンテナ起動
+```sh:
+docker-compose up --build
+```
+[localhost:3000](http://localhost:3000)で確認
+
+
+以下、１から環境構築する場合の手順です。（無視してよいです）
 ## 環境構築
 ### 参考ページ
 - https://qiita.com/hiroki-yama-1118/items/b3388c5dcb155e2e367d
@@ -8,6 +21,7 @@
 - https://qiita.com/takakou/items/a01af0515f49e90bd05c
 
 ### ファイル作成
+- docker-compose.yml
 ```yml:docker-compose.yml
 services:
   backend:
@@ -42,11 +56,13 @@ volumes:
   db-store:
 ```
 
+- backend/Dockerfile
 ```Dockerfile: backend/Dockerfile
 FROM golang:latest
 WORKDIR /app
 ```
 
+- frontend/Dockerfile
 ```Dockerfile: frontend/Dockerfile
 # ベースイメージを指定
 FROM node:19.4.0
@@ -59,6 +75,7 @@ WORKDIR /usr/app
 # backendのコンテナを起動しshellへ入る
 docker-compose run backend sh
 ```
+shell内で以下実行
 ```sh:
 # Goモジュールを初期化する
 go mod init explore_in_tachikawa_with_react
@@ -68,6 +85,7 @@ go get -u github.com/gin-gonic/gin
 touch main.go
 ```
 
+- backend/main.go
 ```go: backend/main.go
 package main
 
@@ -92,6 +110,8 @@ func main() {
 ```
 
 Dockerfileの編集
+
+- backend/Dockerfile
 ```Dockerfile: backend/Dockerfile
 # ベースイメージを指定
 FROM golang:latest
@@ -122,6 +142,7 @@ exit
 ```sh:
 docker-compose up backend --build
 ```
+
 ブラウザで[localhost:8080](http://localhost:8080)へアクセスして下記が表示されることを確認
 > {"message":"Hello, World!"}
 
@@ -146,6 +167,7 @@ npm create vite explore_in_tachikawa_with_react -- --template react-ts
 ```
 
 package.jsonを書き換えて`npm install`してください
+- explore_in_tachikawa_with_react/package.json
 ```json: explore_in_tachikawa_with_react/package.json
 {
   "name": "explore_in_tachikawa_with_react",
@@ -175,6 +197,7 @@ package.jsonを書き換えて`npm install`してください
 ```
 
 また、Dockerを利用する場合はvite.config.tsに以下の追記が必要です
+- explore_in_tachikawa_with_react/vite.config.ts
 ```ts: explore_in_tachikawa_with_react/vite.config.ts
 import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react";
@@ -193,7 +216,8 @@ export default defineConfig({
 touch Dockerfile
 ```
 
-```Dockerfile:
+- frontend/Dockerfile
+```Dockerfile: frontend/Dockerfile
 # ベースイメージを指定
 FROM node:19.4.0
 # コンテナ内の作業ディレクトリを設定
@@ -208,6 +232,7 @@ RUN npm i
 EXPOSE 5173
 CMD ["npm", "run", "dev" ]
 ```
+
 docker起動して、[localhost:3000](http://localhost:3000)で起動確認
 ```
 docker-compose up -d --build
