@@ -7,7 +7,9 @@ https://qiita.com/R_R/items/a09fab09ce9fa9e905c5
 
 - コンテナ起動
 ```sh:
-docker-compose up --build
+docker-compose build
+docker-compose run frontend npm install
+docker-compose up -d
 ```
 [localhost:3000](http://localhost:3000)で確認
 
